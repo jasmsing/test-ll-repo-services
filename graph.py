@@ -1,7 +1,9 @@
 import requests
 import json
+import time
+import datetime
 
-graphID='lll16'
+graphID='lll20'
 schemaFileLocation='schema.json'
 
 # TODO: connect this to graph instance on bluemix
@@ -14,6 +16,13 @@ response = requests.get(api_url + '/_session',
                  auth=(username, password))
 token = 'gds-token ' + json.loads(response.content)['gds-token']
 print token
+
+#TODO remove this
+#print time.strftime("%Y-%m-%d %H:%M:%S")
+#mytime = str(time.strftime("%Y-%m-%d %H:%M:%S"))
+#newtime = datetime.datetime.strptime(mytime, "%Y-%m-%d %H:%M:%S")
+#print newtime
+#print newtime.year
 
 # TODO: check what happens when the token expires. what is our error code? create a way to get a new token automatically when this happens
 
@@ -66,6 +75,19 @@ def insertSampleData():
     createPrint('Japan', 'Lauren and her husband babymooned in gorgeous Japan.',
                 95.00, 'japan.jpg')
     
+    buyPrint('jason', 'Alaska', "2016-10-15 13:13:17", '123 Sweet Lane', 'Apt #5', 'Valentine', 'NE', 69201, 'Paypass' )
+    buyPrint('jason', 'Las Vegas', "2016-02-03 16:05:02", '123 Sweet Lane', 'Apt #5', 'Valentine', 'NE', 69201, 'Paypass' )
+    buyPrint('jason', 'Australia', "2016-06-09 06:45:42", '529 Green St', '', 'Omaha', 'NE', 68104, 'Credit card' )
+    buyPrint('joy', 'Alaska', "2015-12-24 04:34:52", '423 Purple St', '', 'Honolulu', 'HI', 96818, 'Credit card' )
+    buyPrint('joy', 'Antarctica', "2015-12-29 16:25:02", '423 Purple St', '', 'Honolulu', 'HI', 96818, 'Credit card' )
+    buyPrint('joy', 'Las Vegas', "2016-04-22 14:48:30", '423 Purple St', '', 'Honolulu', 'HI', 96818, 'Credit card' )
+    buyPrint('joy', 'Japan', "2016-04-06 09:55:48", '423 Purple St', '', 'Honolulu', 'HI', 96818, 'Credit card' )
+    buyPrint('deanna', 'Alaska', "2016-01-17 08:46:20", '2 Flamingo Lane', '', 'Chicago', 'IL', 60629, 'Credit card' )
+    buyPrint('deanna', 'Antarctica', "2016-06-09 12:05:30", '529 Green St', '', 'Omaha', 'NE', 68104, 'Credit card' )
+    buyPrint('deanna', 'Las Vegas', "2016-10-20 13:50:00", '2 Flamingo Lane', '', 'Chicago', 'IL', 60629, 'Paypass' )
+    buyPrint('dale', 'Las Vegas', "2016-05-05 22:15:45", '25 Takeflight Ave', '', 'Houston', 'TX', 77036, 'Paypass' )
+    buyPrint('dale', 'Australia', "2016-05-06 10:15:25", '25 Takeflight Ave', '', 'Houston', 'TX', 77036, 'Paypass' )
+    buyPrint('dale', 'Las Vegas', "2016-05-06 10:18:30", '25 Takeflight Ave', '', 'Houston', 'TX', 77036, 'Paypass' )
     print 'Sample data successfully inserted'
     
 def createUser(firstName, lastName, username, email):
@@ -120,4 +142,48 @@ def createPrint(name, description, price, imgPath):
     else:
         raise ValueError('Print not created successfully: %s. %s. %s' %
                          (json.dumps(printJson), response.status_code, response.content))
+        
+def buyPrint(username, printName, date, address1, address2, city, state, zip, paymentMethod):
+
+    # get the user vertex id
+    response = requests.get(api_url + '/' + graphID + '/vertices?label=user&username=' + username, 
+                             headers=headers)
+    if ((response.status_code == 200) and 
+        ( len(json.loads(response.content)['result']['data']) > 0)):
+            userVertexId = json.loads(response.content)['result']['data'][0]['id']
+    else:
+        raise ValueError('Could not find user with username %s. %s: %s' %
+                         (username, response.status_code, response.content)) 
+            
+    # get the print vertex id
+    response = requests.get(api_url + '/' + graphID + '/vertices?label=print&name=' + printName, 
+                             headers=headers)
+    if ((response.status_code == 200) and 
+        ( len(json.loads(response.content)['result']['data']) > 0)):
+            printVertexId = json.loads(response.content)['result']['data'][0]['id']
+    else:
+        raise ValueError('Could not find print with name %s. %s: %s' %
+                         (printName, response.status_code, response.content))
+            
+    # create the "buys" edge between the user and print
+    buysJson = {}
+    buysJson['label'] = 'buys'
+    buysJson['outV'] = userVertexId
+    buysJson['inV'] = printVertexId
+    buysJson['properties'] = {}
+    buysJson['properties']['date'] = date
+    buysJson['properties']['address1'] = address1
+    buysJson['properties']['address2'] = address2
+    buysJson['properties']['city'] = city
+    buysJson['properties']['state'] = state
+    buysJson['properties']['zip'] = zip
+    buysJson['properties']['paymentMethod'] = paymentMethod
+
+    response = requests.post(api_url + '/' + graphID + '/edges', data=json.dumps(buysJson), headers=headers)
+    print json.dumps(buysJson)
+    if (response.status_code == 200):
+        print 'Print successfully bought: %s' % (json.dumps(buysJson))
+    else:
+        raise ValueError('Print not successfully bought: %s. %s: %s' %
+                         (json.dumps(buysJson), response.status_code, response.content))
     
