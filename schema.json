@@ -33,10 +33,6 @@
       "propertyKeys": ["name"],
       "composite": true,
       "unique": true,
-      "indexOnly": "print"},
-    {"name": "vByPrice",
-      "propertyKeys": ["price"],
-      "composite": false,
-      "unique": false}
+      "indexOnly": "print"}
   ]
 }

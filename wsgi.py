@@ -46,7 +46,7 @@
 import bottle
 from bottle import *
 import os,sys,logging, traceback, json, string, urllib, urllib2
-
+import graph
 
 #Provide all the static css and js files under the static dir to browser
 @route('/static/:filename#.*#')
@@ -73,6 +73,16 @@ def getAlaska():
 @bottle.get("/australia")
 def getAustralia():
 	return bottle.template('australia')
+
+# Displays the Australia page
+@bottle.get("/insertSampleData")
+def insertSampleData():
+	try:	
+		graph.insertSampleData()
+		return bottle.template('insertSampleData')
+	except ValueError as e:
+		print e
+		return bottle.template('error')
 
 # Error Methods
 @bottle.error(404)
