@@ -22,6 +22,7 @@ if (vcap_config):
     decoded_config = json.loads(vcap_config)
     for key, value in decoded_config.iteritems():
         if key.startswith('IBM Graph'):
+            graph_creds = decoded_config[key][0]['credentials']
             API_URL = graph_creds['apiURL'][:-2] #remove /g from the end of the url
             USERNAME = graph_creds['username']
             PASSWORD = graph_creds['password']
