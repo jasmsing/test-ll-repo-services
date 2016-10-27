@@ -48,6 +48,8 @@ from bottle import *
 import os,sys,logging, traceback, json, string, urllib, urllib2
 import graph
 
+graph.initializeGraph()
+
 #Provide all the static css and js files under the static dir to browser
 @route('/static/:filename#.*#')
 def server_static(filename):
