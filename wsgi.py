@@ -1,7 +1,7 @@
 """
 /*-------------------------------------------------------------------*/
 /*                                                                   */
-/* Copyright IBM Corp. 2013 All Rights Reserved                      */
+/* Copyright IBM Corp. 2016 All Rights Reserved                      */
 /*                                                                   */
 /*-------------------------------------------------------------------*/
 /*                                                                   */
@@ -59,24 +59,18 @@ def server_static(filename):
 # Displays the home page
 @bottle.get("/")
 def getHome():
-	return bottle.template('home')
-	
-# Displays the Antarctica page
-@bottle.get("/antarctica")
-def getAntarctica():
-	return bottle.template('antarctica')
-	
-# Displays the Alaska page
-@bottle.get("/alaska")
-def getAlaska():
-	return bottle.template('alaska')
-	
-# Displays the Australia page
-@bottle.get("/australia")
-def getAustralia():
-	return bottle.template('australia')
+	return bottle.template('home', prints = graph.getAllPrints())
 
-# Displays the Australia page
+# Displays the page for the designated print
+@bottle.get("/print/<printName>")
+def getPrint(printName):
+	try:
+		printInfo = graph.getPrintInfo(printName)
+		return bottle.template('print', printInfo = printInfo)
+	except ValueError:
+		return 'Oops!  We can\'t find that print!'
+
+# Inserts the sample data
 @bottle.get("/insertSampleData")
 def insertSampleData():
 	try:	

@@ -22,7 +22,15 @@ def get (url, headers):
         getToken()
         response = requests.get(url, headers=headers)
     return response
-    
+
+def getAllPrints():
+    response = get(constants.API_URL + '/' + constants.GRAPH_ID + '/vertices?label=print&type=print', 
+                             headers)
+    prints = {}
+    if (response.status_code == 200):
+        prints = json.loads(response.content)['result']['data']
+    return prints
+
 def insertSampleData():    
     print 'Inserting sample data'
     
@@ -43,6 +51,10 @@ def insertSampleData():
                 90.00, 'vegas.jpg')
     createPrint('Japan', 'Lauren and her husband babymooned in gorgeous Japan.',
                 95.00, 'japan.jpg')
+    createPrint('Israel', 'Lauren and her husband were able to tour Israel after Lauren spoke at IBM Business Connect in Tel Aviv in 2014.',
+                80.00, 'israel.jpg')
+    createPrint('Kenya', 'Jason and Lauren went on safari in Kenya after Lauren spent 4 weeks working in Nairobi as part of the IBM Corporate Service Corps.',
+                120.00, 'kenya.jpg')
     
     buyPrint('jason', 'Alaska', "2016-10-15 13:13:17", '123 Sweet Lane', 'Apt #5', 'Valentine', 'NE', 69201, 'Paypass' )
     buyPrint('jason', 'Las Vegas', "2016-02-03 16:05:02", '123 Sweet Lane', 'Apt #5', 'Valentine', 'NE', 69201, 'Paypass' )
@@ -77,6 +89,7 @@ def createUser(firstName, lastName, username, email):
     userJson['lastName'] = lastName
     userJson['username'] = username
     userJson['email'] = email
+    userJson['type'] = 'user'
 
     response = post(constants.API_URL + '/' + constants.GRAPH_ID + '/vertices', 
                              json.dumps(userJson), headers)
@@ -86,6 +99,19 @@ def createUser(firstName, lastName, username, email):
         raise ValueError('User not created successfully: %s. %s. %s' %
                          (json.dumps(userJson), response.status_code, response.content))
         
+def getPrintInfo(name):
+    response = get(constants.API_URL + '/' + constants.GRAPH_ID + '/vertices?label=print&name=' + name, 
+                             headers)
+    
+    if (response.status_code == 200):  
+        results = json.loads(response.content)['result']['data'] 
+        if len(results) > 0:
+            printInfo = results[0]
+            print 'Found print with name %s.' % name
+            return printInfo
+
+    raise ValueError('Unable to find user with name %s' % name)
+
 def createPrint(name, description, price, imgPath):
     
     # check if a print with the given name already exists
@@ -103,6 +129,7 @@ def createPrint(name, description, price, imgPath):
     printJson['description'] = description
     printJson['price'] = price
     printJson['imgPath'] = imgPath
+    printJson['type'] = 'print'
 
     response = post(constants.API_URL + '/' + constants.GRAPH_ID + '/vertices', 
                              json.dumps(printJson), headers)
@@ -147,6 +174,7 @@ def buyPrint(username, printName, date, address1, address2, city, state, zip, pa
     buysJson['properties']['state'] = state
     buysJson['properties']['zip'] = zip
     buysJson['properties']['paymentMethod'] = paymentMethod
+    buysJson['type'] = 'buys'
 
     response = post(constants.API_URL + '/' + constants.GRAPH_ID + '/edges', json.dumps(buysJson), headers)
     print json.dumps(buysJson)

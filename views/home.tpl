@@ -17,6 +17,7 @@
   .preview {
   	float: left;
 	margin-right: 20px;
+	margin-bottom: 30px;
   }    
   .preview .thumb {
     border: 0 none;
@@ -95,27 +96,15 @@
 		</p>
 		
 		<div>
-			
-			<div class="preview">
-				<a href="antarctica">
-					Antarctica<br>
-					<img src="/static/images/penguin.jpg" class="thumb">
-				</a>
-			</div>
-			
-			<div class="preview">
-				<a href="alaska">
-					Alaska<br>
-					<img src="/static/images/alaska.jpg" class="thumb">
-				</a>
-			</div>
-			
-			<div class="preview">
-				<a href="australia">
-					Australia<br>
-					<img src="/static/images/sydney.jpg" class="thumb">
-				</a>
-			</div>
+		
+			% for p in prints:				
+				<div class="preview">
+					<a href="print/{{p['properties']['name'][0]['value']}}">
+						{{p['properties']['name'][0]['value']}}<br>
+						<img src="/static/images/{{p['properties']['imgPath'][0]['value']}}" class="thumb">
+					</a>
+				</div>
+			% end
 		
 		</div> 
 		<p style="clear:both"></p>

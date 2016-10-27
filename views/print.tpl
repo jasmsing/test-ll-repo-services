@@ -67,24 +67,24 @@
   <tr> -->
   <div class="hero-unit">
   <div>
-  <h2><em>Australia</em><h2> </div>
+  <h2><em>{{printInfo['properties']['name'][0]['value']}}</em><h2> </div>
   <br/>
   
-		<img src="/static/images/sydney.jpg" class="sale-photo">
+		<img src="/static/images/{{printInfo['properties']['imgPath'][0]['value']}}" class="sale-photo">
 	
 		<h3>
 			About this landscape:
 		</h3>
 	
 		<div id="description">
-			This photo is another one of Lauren's favorites!  Her husband took these photos of the Sydney Opera House in 2011.
+			{{printInfo['properties']['description'][0]['value']}}
 		</div>
 		
 		<h3>
 			Price: 
 		</h3>
 		
-		<div id="price">120.00</div>
+		<div id="price">${{printInfo['properties']['price'][0]['value']}}</div>
 
   
 
