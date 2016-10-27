@@ -2,18 +2,13 @@ import requests
 import json
 import time
 import datetime
+import constants
 
-graphID='lll20'
 schemaFileLocation='schema.json'
 
-# TODO: connect this to graph instance on bluemix
-api_url='https://ibmgraph-alpha.ng.bluemix.net/5a3f6509-cbb5-420d-afb9-b6ee93912fb9'
-username='b40cdf16-7160-41b8-afaa-3e598f61e588'
-password='62433f76-2d6d-489d-8d0b-408bb1c058a0'
-
 # get the gds-token
-response = requests.get(api_url + '/_session', 
-                 auth=(username, password))
+response = requests.get(constants.API_URL + '/_session', 
+                 auth=(constants.USERNAME, constants.PASSWORD))
 token = 'gds-token ' + json.loads(response.content)['gds-token']
 print token
 
@@ -25,34 +20,36 @@ print token
 #print newtime.year
 
 # TODO: check what happens when the token expires. what is our error code? create a way to get a new token automatically when this happens
+# from the api reference:
+# Once the token expires, you get a 401 error response when trying to use it. The token can also be invalidated when you unbind the credentials that are being used, which results in a 403 error response.
 
 # set the headers for all of our requests to use the token
 headers={'Authorization': token, 'Accept': 'application/json', 'Content-Type' : 'application/json'}
 
 # if the graph is not already created, create it and create the schema and indexes
-response = requests.get(api_url + '/' + graphID, headers=headers)
+response = requests.get(constants.API_URL + '/' + constants.GRAPH_ID, headers=headers)
 if response.status_code == 200:
-    print 'Graph with id %s already exists' % (graphID)
+    print 'Graph with id %s already exists' % (constants.GRAPH_ID)
 else:
-    print 'Creating graph with id %s' % (graphID)
-    response = requests.post(api_url + '/_graphs/' + graphID,
+    print 'Creating graph with id %s' % (constants.GRAPH_ID)
+    response = requests.post(constants.API_URL + '/_graphs/' + constants.GRAPH_ID,
                          headers=headers)
     if (response.status_code == 201):
-        print 'Graph with id %s successfully created'  % (graphID)
+        print 'Graph with id %s successfully created'  % (constants.GRAPH_ID)
     else:
         raise ValueError('Graph with id %s not created successfully: %s. %s' %
-                         (graphID, response.status_code, response.content))
+                         (constants.GRAPH_ID, response.status_code, response.content))
     
-    print 'Creating the schema and indexes for graph %s based on %s' % (graphID, schemaFileLocation)
-    schema = open('schema.json', 'rb').read()
-    response = requests.post(api_url + '/' + graphID + '/schema',
+    print 'Creating the schema and indexes for graph %s based on %s' % (constants.GRAPH_ID, schemaFileLocation)
+    schema = open(schemaFileLocation, 'rb').read()
+    response = requests.post(constants.API_URL + '/' + constants.GRAPH_ID + '/schema',
                          data=schema,
                          headers=headers)
     if (response.status_code == 200):
-        print 'Schema and indexes for graph %s successfully created based on %s' % (graphID, schemaFileLocation)
+        print 'Schema and indexes for graph %s successfully created based on %s' % (constants.GRAPH_ID, schemaFileLocation)
     else:
         raise ValueError('Schema and indexes for graph %s not created successfully: %s. %s' %
-                         (graphID, response.status_code, response.content))
+                         (constants.GRAPH_ID, response.status_code, response.content))
 
 def insertSampleData():    
     print 'Inserting sample data'
@@ -93,7 +90,7 @@ def insertSampleData():
 def createUser(firstName, lastName, username, email):
     
     # check if a user with the given username already exists
-    response = requests.get(api_url + '/' + graphID + '/vertices?label=user&username=' + username, 
+    response = requests.get(constants.API_URL + '/' + constants.GRAPH_ID + '/vertices?label=user&username=' + username, 
                              headers=headers)
     if ((response.status_code == 200) and 
         ( len(json.loads(response.content)['result']['data']) > 0)):
@@ -109,7 +106,7 @@ def createUser(firstName, lastName, username, email):
     userJson['username'] = username
     userJson['email'] = email
 
-    response = requests.post(api_url + '/' + graphID + '/vertices', 
+    response = requests.post(constants.API_URL + '/' + constants.GRAPH_ID + '/vertices', 
                              data=json.dumps(userJson), headers=headers)
     if (response.status_code == 200):
         print 'User successfully created: %s' % (json.dumps(userJson))
@@ -120,7 +117,7 @@ def createUser(firstName, lastName, username, email):
 def createPrint(name, description, price, imgPath):
     
     # check if a print with the given name already exists
-    response = requests.get(api_url + '/' + graphID + '/vertices?label=print&name=' + name, 
+    response = requests.get(constants.API_URL + '/' + constants.GRAPH_ID + '/vertices?label=print&name=' + name, 
                              headers=headers)
     if ((response.status_code == 200) and 
         ( len(json.loads(response.content)['result']['data']) > 0)):
@@ -135,7 +132,7 @@ def createPrint(name, description, price, imgPath):
     printJson['price'] = price
     printJson['imgPath'] = imgPath
 
-    response = requests.post(api_url + '/' + graphID + '/vertices', 
+    response = requests.post(constants.API_URL + '/' + constants.GRAPH_ID + '/vertices', 
                              data=json.dumps(printJson), headers=headers)
     if (response.status_code == 200):
         print 'Print successfully created: %s' % (json.dumps(printJson))
@@ -146,7 +143,7 @@ def createPrint(name, description, price, imgPath):
 def buyPrint(username, printName, date, address1, address2, city, state, zip, paymentMethod):
 
     # get the user vertex id
-    response = requests.get(api_url + '/' + graphID + '/vertices?label=user&username=' + username, 
+    response = requests.get(constants.API_URL + '/' + constants.GRAPH_ID + '/vertices?label=user&username=' + username, 
                              headers=headers)
     if ((response.status_code == 200) and 
         ( len(json.loads(response.content)['result']['data']) > 0)):
@@ -156,7 +153,7 @@ def buyPrint(username, printName, date, address1, address2, city, state, zip, pa
                          (username, response.status_code, response.content)) 
             
     # get the print vertex id
-    response = requests.get(api_url + '/' + graphID + '/vertices?label=print&name=' + printName, 
+    response = requests.get(constants.API_URL + '/' + constants.GRAPH_ID + '/vertices?label=print&name=' + printName, 
                              headers=headers)
     if ((response.status_code == 200) and 
         ( len(json.loads(response.content)['result']['data']) > 0)):
@@ -179,7 +176,7 @@ def buyPrint(username, printName, date, address1, address2, city, state, zip, pa
     buysJson['properties']['zip'] = zip
     buysJson['properties']['paymentMethod'] = paymentMethod
 
-    response = requests.post(api_url + '/' + graphID + '/edges', data=json.dumps(buysJson), headers=headers)
+    response = requests.post(constants.API_URL + '/' + constants.GRAPH_ID + '/edges', data=json.dumps(buysJson), headers=headers)
     print json.dumps(buysJson)
     if (response.status_code == 200):
         print 'Print successfully bought: %s' % (json.dumps(buysJson))

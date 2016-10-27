@@ -4,7 +4,7 @@
     {"name": "lastName", "dataType": "String", "cardinality": "SINGLE"},
     {"name": "username", "dataType": "String", "cardinality": "SINGLE"},
     {"name": "email", "dataType": "String", "cardinality": "SINGLE"},
-    {"name": "date", "dataType": "Integer", "cardinality": "SINGLE"},
+    {"name": "datetime", "dataType": "String", "cardinality": "SINGLE"},
     {"name": "address1", "dataType": "String", "cardinality": "SINGLE"},
     {"name": "address2", "dataType": "String", "cardinality": "SINGLE"},
     {"name": "city", "dataType": "String", "cardinality": "SINGLE"},
