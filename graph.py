@@ -12,13 +12,6 @@ response = requests.get(constants.API_URL + '/_session',
 token = 'gds-token ' + json.loads(response.content)['gds-token']
 print token
 
-#TODO remove this
-#print time.strftime("%Y-%m-%d %H:%M:%S")
-#mytime = str(time.strftime("%Y-%m-%d %H:%M:%S"))
-#newtime = datetime.datetime.strptime(mytime, "%Y-%m-%d %H:%M:%S")
-#print newtime
-#print newtime.year
-
 # TODO: check what happens when the token expires. what is our error code? create a way to get a new token automatically when this happens
 # from the api reference:
 # Once the token expires, you get a 401 error response when trying to use it. The token can also be invalidated when you unbind the credentials that are being used, which results in a 403 error response.

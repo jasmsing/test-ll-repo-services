@@ -3,7 +3,7 @@ import json
 
 
 # A string that is unique in your IBM Graph instance
-GRAPH_ID = 'lll24'
+GRAPH_ID = 'landscapes_graph'
 
 # If you are running the app locally and using an IBM Graph instance
 #   - navigate to your Graph instance on Bluemix
@@ -23,7 +23,6 @@ if (vcap_config):
     for key, value in decoded_config.iteritems():
         if key.startswith('IBM Graph'):
             API_URL = graph_creds['apiURL'][:-2] #remove /g from the end of the url
-            API_URL = graph_creds['apiURL']
             USERNAME = graph_creds['username']
             PASSWORD = graph_creds['password']
     
