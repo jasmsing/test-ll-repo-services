@@ -61,6 +61,11 @@ def server_static(filename):
 def getHome():
 	return bottle.template('home', prints = graph.getAllPrints())
 
+# Displays the registration page
+@bottle.get("/register")
+def getRegistration():
+	return bottle.template('register')
+
 # Displays the page for the designated print
 @bottle.get("/print/<printName>")
 def getPrint(printName):
@@ -68,22 +73,43 @@ def getPrint(printName):
 		printInfo = graph.getPrintInfo(printName)
 		return bottle.template('print', printInfo = printInfo)
 	except ValueError:
-		return 'Oops!  We can\'t find that print!'
+		return bottle.template('simpleMessage',
+							title='Oops!',
+							message='We can\'t find that print. Sorry!')
+	
+@bottle.post('/register')
+def registerUser():
+	firstName = request.forms.get('firstName')
+	lastName = request.forms.get("lastName")
+	email = request.forms.get("email")
+	username = request.forms.get("username")
+	
+	try:
+		graph.createUser(firstName, lastName, username, email)
+		return bottle.template('simpleMessage',
+							title='Success!',
+							message='You\'re successfully registered. Now go buy something!')
+	except ValueError as e:
+		return bottle.template('register', 
+							error=e,
+							firstName=firstName,
+							lastName=lastName,
+							email=email)
 
 # Inserts the sample data
 @bottle.get("/insertSampleData")
 def insertSampleData():
 	try:	
 		graph.insertSampleData()
-		return bottle.template('insertSampleData')
+		return bottle.template('simpleMessage', title='Sample Data Created', message='Woo hoo!  The sample data was created!')
 	except ValueError as e:
 		print e
-		return bottle.template('error')
+		return bottle.template('simpleMessage', title='Oops!  Something went wrong!', message=e)
 
 # Error Methods
 @bottle.error(404)
 def error404(error):
-    return 'Nothing here--sorry!'
+    return bottle.template('simpleMessage', title='404', message='We can\'t find that page.  Sorry!')
 
 
 application = bottle.default_app()

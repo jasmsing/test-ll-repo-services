@@ -24,23 +24,40 @@ def get (url, headers):
     return response
 
 def getAllPrints():
+    print 'Getting the prints...'
     response = get(constants.API_URL + '/' + constants.GRAPH_ID + '/vertices?label=print&type=print', 
                              headers)
     prints = {}
     if (response.status_code == 200):
         prints = json.loads(response.content)['result']['data']
+        print 'Successfully got the prints'
     else:
         raise ValueError('An error occurred while getting the prints: %s. %s' %
                          (response.status_code, response.content))
     return prints
 
 def insertSampleData():    
-    print 'Inserting sample data'
+    print 'Inserting sample data...'
     
-    createUser('Jason', 'Schaefer', 'jason', 'jason@example.com')
-    createUser('Joy', 'Haywood', 'joy', 'joy@example.com')
-    createUser('Deanna', 'Howling', 'deanna', 'deanna@example.com')
-    createUser('Dale', 'Haywood', 'dale', 'dale@example.com')
+    try: 
+        createUser('Jason', 'Schaefer', 'jason', 'jason@example.com')
+    except ValueError as e:
+        print e
+    
+    try:
+        createUser('Joy', 'Haywood', 'joy', 'joy@example.com')
+    except ValueError as e:
+        print e
+    
+    try:
+        createUser('Deanna', 'Howling', 'deanna', 'deanna@example.com')
+    except ValueError as e:
+        print e
+    
+    try:
+        createUser('Dale', 'Haywood', 'dale', 'dale@example.com')
+    except ValueError as e:
+        print e
     
     createPrint('Alaska', 'Lauren loves this photo even though she wasn\'t present ' + 
                 'when the photo was taken. Her husband took this photo on a guy\'s weekend in Alaska.',
@@ -81,7 +98,7 @@ def createUser(firstName, lastName, username, email):
                              headers)
     if ((response.status_code == 200) and 
         ( len(json.loads(response.content)['result']['data']) > 0)):
-            print 'User with username %s already exists. User will not be created.' % username
+            raise ValueError('The username \'%s\' is already taken. Get creative and try again.' % username)
             return
     
     # if the user does not already exist, create the user
@@ -202,6 +219,7 @@ def initializeGraph():
     getToken()
 
     # if the graph is not already created, create it and create the schema and indexes
+    print 'Checking to see if graph with id %s exists...' % (constants.GRAPH_ID)
     response = get(constants.API_URL + '/' + constants.GRAPH_ID, headers)
     if response.status_code == 200:
         print 'Graph with id %s already exists' % (constants.GRAPH_ID)
@@ -214,7 +232,7 @@ def initializeGraph():
             raise ValueError('Graph with id %s not created successfully: %s. %s' %
                              (constants.GRAPH_ID, response.status_code, response.content))
         
-        print 'Creating the schema and indexes for graph %s based on %s' % (constants.GRAPH_ID, schemaFileLocation)
+        print 'Creating the schema and indexes for graph %s based on %s. This may take a minute or two...' % (constants.GRAPH_ID, schemaFileLocation)
         schema = open(schemaFileLocation, 'rb').read()
         response = post(constants.API_URL + '/' + constants.GRAPH_ID + '/schema',
                              schema,
