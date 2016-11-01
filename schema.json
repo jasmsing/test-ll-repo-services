@@ -14,7 +14,8 @@
     {"name": "name", "dataType": "String", "cardinality": "SINGLE"},
     {"name": "description", "dataType": "String", "cardinality": "SINGLE"},
     {"name": "price", "dataType": "Float", "cardinality": "SINGLE"},
-    {"name": "imgPath", "dataType": "String", "cardinality": "SINGLE"}
+    {"name": "imgPath", "dataType": "String", "cardinality": "SINGLE"},
+    {"name": "type", "dataType": "String", "cardinality": "SINGLE"}
   ],
   "vertexLabels": [
     {"name": "user"},
@@ -24,6 +25,11 @@
     {"name": "buys", "multiplicity": "MULTI"}
   ],
   "vertexIndexes": [
+  	{"name": "userByName",
+      "propertyKeys": ["firstName", "lastName"],
+      "composite": true,
+      "unique": false,
+      "indexOnly": "user"},
     {"name": "userByUsername",
       "propertyKeys": ["username"],
       "composite": true,
@@ -33,6 +39,10 @@
       "propertyKeys": ["name"],
       "composite": true,
       "unique": true,
-      "indexOnly": "print"}
+      "indexOnly": "print"},
+    {"name": "vByType",
+      "propertyKeys": ["type"],
+      "composite": true,
+      "unique": false}
   ]
 }

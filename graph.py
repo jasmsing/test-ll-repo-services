@@ -29,6 +29,9 @@ def getAllPrints():
     prints = {}
     if (response.status_code == 200):
         prints = json.loads(response.content)['result']['data']
+    else:
+        raise ValueError('An error occurred while getting the prints: %s. %s' %
+                         (response.status_code, response.content))
     return prints
 
 def insertSampleData():    

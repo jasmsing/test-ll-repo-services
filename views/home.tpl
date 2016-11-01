@@ -22,7 +22,7 @@
   .preview .thumb {
     border: 0 none;
     margin-top: 5px;
-    width: 252px;
+    max-height: 125px;
   }
 	
 	/* Custom container */
@@ -95,17 +95,19 @@
 			
 		</p>
 		
-		<div>
+		<div class='container'>
+			<div class='row'>
 		
-			% for p in prints:				
-				<div class="preview">
-					<a href="print/{{p['properties']['name'][0]['value']}}">
-						{{p['properties']['name'][0]['value']}}<br>
-						<img src="/static/images/{{p['properties']['imgPath'][0]['value']}}" class="thumb">
-					</a>
-				</div>
-			% end
-		
+				% for p in prints:				
+					<div class="preview span3">
+						<a href="print/{{p['properties']['name'][0]['value']}}">
+							{{p['properties']['name'][0]['value']}}<br>
+							<img src="/static/images/{{p['properties']['imgPath'][0]['value']}}" class="thumb">
+						</a>
+					</div>
+				% end
+			
+			</div>
 		</div> 
 		<p style="clear:both"></p>
   
