@@ -5,6 +5,9 @@ import json
 # A string that is unique in your IBM Graph instance
 GRAPH_ID = 'landscapes_graph'
 
+# A secret key for the cookie that stores info about authenticated user
+COOKIE_KEY = 'a-really-big-secret'
+
 # If you are running the app locally and using an IBM Graph instance
 #   - navigate to your Graph instance on Bluemix
 #   - click Service Credentials

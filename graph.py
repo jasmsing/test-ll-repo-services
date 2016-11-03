@@ -90,6 +90,14 @@ def insertSampleData():
     buyPrint('dale', 'Australia', "2016-05-06 10:15:25", '25 Takeflight Ave', '', 'Houston', 'TX', 77036, 'Paypass' )
     buyPrint('dale', 'Las Vegas', "2016-05-06 10:18:30", '25 Takeflight Ave', '', 'Houston', 'TX', 77036, 'Paypass' )
     print 'Sample data successfully inserted'
+
+def getUser(username):    
+    print 'Getting user with username %s from the graph' % username
+    response = get(constants.API_URL + '/' + constants.GRAPH_ID + '/vertices?label=user&username=' + username, 
+                             headers)
+    if len(json.loads(response.content)['result']['data']) > 0 :
+        return username
+    return None
     
 def createUser(firstName, lastName, username, email):
     

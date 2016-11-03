@@ -47,6 +47,7 @@ import bottle
 from bottle import *
 import os,sys,logging, traceback, json, string, urllib, urllib2
 import graph
+import constants
 
 graph.initializeGraph()
 
@@ -58,25 +59,31 @@ def server_static(filename):
 
 # Displays the home page
 @bottle.get("/")
+@bottle.get("/home")
 def getHome():
-	return bottle.template('home', prints = graph.getAllPrints())
-
-# Displays the registration page
-@bottle.get("/register")
-def getRegistration():
-	return bottle.template('register')
+	return bottle.template('home', 
+						username = request.get_cookie("account", secret=constants.COOKIE_KEY), 
+						prints = graph.getAllPrints())
 
 # Displays the page for the designated print
 @bottle.get("/print/<printName>")
 def getPrint(printName):
 	try:
 		printInfo = graph.getPrintInfo(printName)
-		return bottle.template('print', printInfo = printInfo)
+		return bottle.template('print',
+						username = request.get_cookie("account", secret=constants.COOKIE_KEY),
+						printInfo = printInfo)
 	except ValueError:
 		return bottle.template('simpleMessage',
+							username = request.get_cookie("account", secret=constants.COOKIE_KEY),
 							title='Oops!',
-							message='We can\'t find that print. Sorry!')
-	
+							message='We can\'t find that print. Sorry!')	
+
+# Displays the registration page
+@bottle.get("/register")
+def getRegistration():
+	return bottle.template('register')
+
 @bottle.post('/register')
 def registerUser():
 	firstName = request.forms.get('firstName')
@@ -85,8 +92,13 @@ def registerUser():
 	username = request.forms.get("username")
 	
 	try:
+		# create the user in the graph
 		graph.createUser(firstName, lastName, username, email)
+		# authenticate the user
+		response.set_cookie("account", username, secret=constants.COOKIE_KEY)
+		
 		return bottle.template('simpleMessage',
+							username = username,
 							title='Success!',
 							message='You\'re successfully registered. Now go buy something!')
 	except ValueError as e:
@@ -96,20 +108,71 @@ def registerUser():
 							lastName=lastName,
 							email=email)
 
+# Displays the Sign In page
+@bottle.get("/signin")
+def getSignin():
+	return getSignin('home', '')
+	
+@bottle.get("/signin/<currentUrl>")
+def getSignin(currentUrl):
+	return getSignin(currentUrl, '')
+	
+@bottle.get("/signin/<currentUrl>/<currentUrl2>")
+def getSignin(currentUrl, currentUrl2):
+	if len(currentUrl2) > 0:
+		currentUrl = currentUrl + '/' + currentUrl2
+	return bottle.template('signin', currentUrl=currentUrl)
+
+@bottle.post('/signin')
+def signIn():
+	username = request.forms.get("username")
+	# for simplicity, not dealing with passwords
+	# if the username exists in the graph, we will authenticate the user
+	username = graph.getUser(username)
+	if username is not None:
+		print 'Authenticating user %s' % username
+		response.set_cookie("account", username, secret=constants.COOKIE_KEY)
+		redirectUrl = request.forms.get("redirectUrl");
+		if len(redirectUrl) > 0:
+			redirect(redirectUrl)
+		else:
+			redirect('/')
+	else:
+		print 'Unable to authenticate user %s' % username
+		return bottle.template('signin', 
+							error='Unable to find an account with the given username. Please try again.',
+							currentUrl = request.forms.get("redirectUrl"))
+
+@bottle.get('/signout')
+def signOut():
+	print 'Signing out user'
+	response.delete_cookie("account")
+	redirect('/')
+		
 # Inserts the sample data
 @bottle.get("/insertSampleData")
 def insertSampleData():
 	try:	
 		graph.insertSampleData()
-		return bottle.template('simpleMessage', title='Sample Data Created', message='Woo hoo!  The sample data was created!')
+		return bottle.template('simpleMessage', 
+							username = request.get_cookie("account", secret=constants.COOKIE_KEY),
+							title='Sample Data Created', 
+							message='Woo hoo!  The sample data was created!')
 	except ValueError as e:
 		print e
-		return bottle.template('simpleMessage', title='Oops!  Something went wrong!', message=e)
+		return bottle.template('simpleMessage', 
+							username = request.get_cookie("account", secret=constants.COOKIE_KEY),
+							title='Oops!  Something went wrong!', 
+							message=e)
 
 # Error Methods
 @bottle.error(404)
 def error404(error):
-    return bottle.template('simpleMessage', title='404', message='We can\'t find that page.  Sorry!')
+    print '404'
+    return bottle.template('simpleMessage', 
+						username = request.get_cookie("account", secret=constants.COOKIE_KEY),
+						title='404', 
+						message='We can\'t find that page.  Sorry!')
 
 
 application = bottle.default_app()

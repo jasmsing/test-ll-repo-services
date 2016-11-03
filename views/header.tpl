@@ -68,20 +68,40 @@
           
 	  
           <div class="nav-collapse collapse">
-           	<ul class="nav navbar-nav pull-right">
-           		% if not defined('active'):
-           		%   active = 'none'
+           	<ul class="nav navbar-nav pull-right">           		
+           		% if not defined('redirectUrl'):
+           		%   print 'Warning: redirectUrl not set and redirects may not work as expected'
+           		%   redirectUrl = ''
            		% end
            		
-           		
-           		<li><a href="#">Sign In</a></li>
-           		
-           		% if active == 'register': 
-           			<li class="active">
-           		% else:
-           			<li>
+           		% if not defined('currentUrl'):
+           		%   print 'Warning: currentUrl not set and the navbar will not indicate the current page'
+           		%   currentUrl = ''
            		% end
-           		<a href="/register">Register</a></li>
+           		
+           		% if not defined('username'):
+           		%    print 'Warning: username is not defined on this page and the navbar may not act as expected'
+           		%    username = None
+           		% end
+           		% if username is None:      		
+	           		% if 'signin' in currentUrl: 
+	           			<li class="active">
+	           		% else:
+	           			<li>
+	           		% end
+	           		<a href="/signin/{{redirectUrl}}">Sign In</a></li>
+	           		
+	           		% if 'register' in currentUrl: 
+	           			<li class="active">
+	           		% else:
+	           			<li>
+	           		% end
+	           		<a href="/register">Register</a></li>	           	   	
+	           	
+	           	% else:
+	           		<li><a href="/signout">Sign Out</a></li>
+	            
+	            % end
            		
            	</ul>
           </div><!--/.nav-collapse -->
