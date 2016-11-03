@@ -48,6 +48,7 @@ from bottle import *
 import os,sys,logging, traceback, json, string, urllib, urllib2
 import graph
 import constants
+import urlparse
 
 graph.initializeGraph()
 
@@ -147,7 +148,7 @@ def signIn():
 def signOut():
 	print 'Signing out user'
 	response.delete_cookie("account")
-	redirect('/')
+	redirect(urlparse.parse_qs(urlparse.urlparse(request.url).query)['redirectUrl'][0])
 		
 # Inserts the sample data
 @bottle.get("/insertSampleData")

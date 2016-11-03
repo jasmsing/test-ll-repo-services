@@ -99,7 +99,7 @@
 	           		<a href="/register">Register</a></li>	           	   	
 	           	
 	           	% else:
-	           		<li><a href="/signout">Sign Out</a></li>
+	           		<li><a href="/signout?redirectUrl={{redirectUrl}}">Sign Out</a></li>
 	            
 	            % end
            		
