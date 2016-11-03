@@ -1,5 +1,4 @@
-%# todo: think through redirects for the register page
-% include header redirectUrl='home'
+% include header redirectUrl='home', currentUrl='register', username=None
 <div><h2><em>Register</em><h2> </div>
 
 % if defined('error'):

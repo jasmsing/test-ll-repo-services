@@ -1,4 +1,4 @@
-% include header currentUrl='signin'
+% include header currentUrl='signin', redirectUrl=redirectUrl, username=None
 <div><h2><em>Sign In</em><h2> </div>
 
 % if defined('error'):

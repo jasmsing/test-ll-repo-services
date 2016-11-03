@@ -1,4 +1,4 @@
-% include header username = username, redirectUrl = 'print/' + printInfo['properties']['name'][0]['value']
+% include header username = username, redirectUrl = 'print/' + printInfo['properties']['name'][0]['value'], currentUrl = 'print/' + printInfo['properties']['name'][0]['value'] 
   <div><h2><em>{{printInfo['properties']['name'][0]['value']}}</em><h2> </div>
   <br/>
   

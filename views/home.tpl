@@ -1,4 +1,4 @@
-% include header username = username, redirectUrl = 'home'
+% include header username = username, redirectUrl = 'home', currentUrl = 'home'
     <div><h2 class="text-center"><em>Lauren's Lovely Landscapes</em><h2> </div>
   	<br/>
   	

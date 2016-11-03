@@ -89,7 +89,7 @@
 	           		% else:
 	           			<li>
 	           		% end
-	           		<a href="/signin/{{redirectUrl}}">Sign In</a></li>
+	           		<a href="/signin?redirectUrl={{redirectUrl}}">Sign In</a></li>
 	           		
 	           		% if 'register' in currentUrl: 
 	           			<li class="active">
