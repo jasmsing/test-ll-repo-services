@@ -112,18 +112,13 @@ def registerUser():
 # Displays the Sign In page
 @bottle.get("/signin")
 def getSignin():
-	return getSignin('home', '')
-	
-@bottle.get("/signin/<currentUrl>")
-def getSignin(currentUrl):
-	return getSignin(currentUrl, '')
-	
-@bottle.get("/signin/<currentUrl>/<currentUrl2>")
-def getSignin(currentUrl, currentUrl2):
-	if len(currentUrl2) > 0:
-		currentUrl = currentUrl + '/' + currentUrl2
-	return bottle.template('signin', currentUrl=currentUrl)
+    try:
+        redirectUrl = urlparse.parse_qs(urlparse.urlparse(request.url).query)['redirectUrl'][0]
+    except:
+        redirectUrl = 'home'
+    return bottle.template('signin', redirectUrl=redirectUrl)    
 
+# Displays the Sign In page
 @bottle.post('/signin')
 def signIn():
 	username = request.forms.get("username")
@@ -133,11 +128,7 @@ def signIn():
 	if username is not None:
 		print 'Authenticating user %s' % username
 		response.set_cookie("account", username, secret=constants.COOKIE_KEY)
-		redirectUrl = request.forms.get("redirectUrl");
-		if len(redirectUrl) > 0:
-			redirect(redirectUrl)
-		else:
-			redirect('/')
+		redirect(request.forms.get("redirectUrl"))
 	else:
 		print 'Unable to authenticate user %s' % username
 		return bottle.template('signin', 

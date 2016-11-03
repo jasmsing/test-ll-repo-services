@@ -1,4 +1,3 @@
-% redirectUrl = currentUrl
 % include header currentUrl='signin'
 <div><h2><em>Sign In</em><h2> </div>
 
