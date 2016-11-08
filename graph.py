@@ -252,4 +252,18 @@ def initializeGraph():
         else:
             raise ValueError('Schema and indexes for graph %s not created successfully: %s. %s' %
                              (constants.GRAPH_ID, response.status_code, response.content))
-    
+
+# Deletes 'Buys' edges, 'User' vertexes, and 'Print' vertexes
+# Does not delete the graph itself            
+def dropGraph():
+    data = {
+        "gremlin":  "def g = graph.traversal();" + 
+                    "g.E().has('type', 'buys').drop().count();" + 
+                    "g.V().has('type', within('print','user')).drop();" 
+        }
+    response = post(constants.API_URL + '/' + constants.GRAPH_ID + '/gremlin' , json.dumps(data), headers)
+    if response.status_code == 200:
+        print 'Successfully deleted Buys edges, Print vertexes, and User vertexes'
+    else:
+        raise ValueError('An error occurred while deleting the vertexes and/or edges for the graph %s: %s. %s'%
+                             (constants.GRAPH_ID, response.status_code, response.content))

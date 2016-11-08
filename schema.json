@@ -44,5 +44,11 @@
       "propertyKeys": ["type"],
       "composite": true,
       "unique": false}
+  ],
+  "edgeIndexes": [
+    {"name": "eByType",
+      "propertyKeys": ["type"],
+      "composite": true,
+      "unique": false}
   ]
 }

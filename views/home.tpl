@@ -16,12 +16,14 @@
 			
 		</p>
 		
+		% if len(prints) == 0:
+			<p>
+				Sorry!  No prints are currently available for sale.
+			</p>
+		% end
+		
 		<div class='container'>
 			<div class='row'>
-			
-				% if len(prints) == 0:
-					Sorry!  No prints are currently available for sale.
-				% end
 		
 				% for p in prints:				
 					<div class="preview span3">

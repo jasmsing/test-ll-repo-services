@@ -2,12 +2,11 @@
 
   <div><h2><em>Hello, developers!</em><h2> </div>
   
- 
   <p>
 	  This is version 2 of Lauren's Lovely Landscapes.  Version 1 is a static sample 
 	  app that demonstrates how easy it is to deploy an app using IBM Bluemix. Version 2 
 	  expands Lauren's Lovely Landscapes to dynamically display prints as well as allow users 
-	  to sign in, sign out, and buy prints. 
+	  to register, sign in, sign out, and buy prints. 
   </p>
   
   <p>
@@ -29,5 +28,19 @@
 
   <h3>Want the code?</h3>
   I thought you might.  Get a copy of my code <a href="https://hub.jazz.net/project/lhayward/Laurens%20Lovely%20Landscapes%20%28IBM%20Graph%29/overview">here</a>.		
+
+  </div> <!-- end of the hero-unit-->
+  </div> <!-- end of the container-->
+  
+<div class="container">
+<div class="hero-unit">
+  
+  <div><h2><em>The Data</em><h2> </div>
+  
+  <h3>Insert sample data</h3>
+  Click <a href="insertSampleData">here</a> to insert the sample data.  Note that it may take a minute or two.
+  
+  <h3>Delete the data</h3>
+  To start over with a fresh graph, click <a href="deleteData">here</a> to delete the data.
 
 % include footer

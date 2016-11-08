@@ -230,6 +230,22 @@ def insertSampleData():
 							title='Oops!  Something went wrong!', 
 							message=e)
 
+# Deletes the data in the graph
+@bottle.get("/deleteData")
+def deleteData():
+	try:	
+		graph.dropGraph()
+		return bottle.template('simpleMessage', 
+							username = request.get_cookie("account", secret=constants.COOKIE_KEY),
+							title='Data deleted', 
+							message='Woo hoo!  The sample data was deleted!')
+	except ValueError as e:
+		print e
+		return bottle.template('simpleMessage', 
+							username = request.get_cookie("account", secret=constants.COOKIE_KEY),
+							title='Oops!  Something went wrong!', 
+							message=e)
+
 @bottle.get("/dev")
 def getPageForDevelopers():
 	return bottle.template('dev', 
