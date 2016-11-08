@@ -86,7 +86,7 @@ def getOrderForm(printName):
 	
 	username = request.get_cookie("account", secret=constants.COOKIE_KEY)
 	if username is None or len(username) <= 0:
-		return bottle.template('authenticateBeforeOrder', printToOrder = printName)
+		return bottle.template('authenticateBeforeOrder', redirectUrl = 'orderPrint/' + printName)
 	
 	try:
 		printInfo = graph.getPrintInfo(printName)    
@@ -138,7 +138,11 @@ def placeOrder():
 # Displays the registration page
 @bottle.get("/register")
 def getRegistration():
-	return bottle.template('register')
+	try:
+		redirectUrl = urlparse.parse_qs(urlparse.urlparse(request.url).query)['redirectUrl'][0]
+	except:
+		redirectUrl = 'home'
+	return bottle.template('register', redirectUrl = redirectUrl)
 
 @bottle.post('/register')
 def registerUser():
@@ -146,12 +150,16 @@ def registerUser():
 	lastName = request.forms.get("lastName")
 	email = request.forms.get("email")
 	username = request.forms.get("username")
+	redirectUrl = request.forms.get("redirectUrl")
 	
 	try:
 		# create the user in the graph
 		graph.createUser(firstName, lastName, username, email)
 		# authenticate the user
 		response.set_cookie("account", username, secret=constants.COOKIE_KEY)
+		
+		if 'orderPrint' in redirectUrl:
+			return redirect(request.forms.get("redirectUrl"))
 		
 		return bottle.template('simpleMessage',
 							username = username,
@@ -162,7 +170,8 @@ def registerUser():
 							error=e,
 							firstName=firstName,
 							lastName=lastName,
-							email=email)
+							email=email,
+							redirectUrl=redirectUrl)
 
 # Displays the Sign In page
 @bottle.get("/signin")

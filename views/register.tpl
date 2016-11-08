@@ -1,4 +1,4 @@
-% include header redirectUrl='home', currentUrl='register', username=None
+% include header redirectUrl=redirectUrl, currentUrl='register', username=None
 <div><h2><em>Register</em><h2> </div>
 
 % if defined('error'):
@@ -40,6 +40,8 @@
 		<label for="username">Username:</label>
 		<input class="form-control" name="username">
 	</div>
+	
+	<input type="hidden" name="redirectUrl" value="{{redirectUrl}}">
 	
 	<button value="Register" type="submit" class="btn btn-default">Submit</button>
 

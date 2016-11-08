@@ -18,7 +18,7 @@ def post (url, data, headers):
 def get (url, headers):
     response = requests.get(url, headers=headers)
     if (response.status_code == 401) or (response.status_code == 403):
-        print 'Requesting a new token...'
+        print 'Expired token. Requesting a new token...'
         getToken()
         response = requests.get(url, headers=headers)
     return response
