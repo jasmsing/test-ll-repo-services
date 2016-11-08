@@ -111,17 +111,26 @@ def placeOrder():
 	state = request.forms.get("state")
 	zip = request.forms.get("zip")
 	payment = request.forms.get("payment")
+	datetime = str(time.strftime("%Y-%m-%d %H:%M:%S"))
+	printInfo = graph.getPrintInfo(printToOrder)
 	
 	try:	
-		graph.buyPrint(username, printToOrder, str(time.strftime("%Y-%m-%d %H:%M:%S")), firstName, lastName, address1, address2, city, state, zip, payment)
-		#TODO: display order details
-		return bottle.template('simpleMessage',
+		graph.buyPrint(username, printToOrder, datetime, firstName, lastName, address1, address2, city, state, zip, payment)
+		return bottle.template('orderSuccess',
 							username = username,
-							title='Success!',
-							message='Your order has been placed!')
+							printToOrder=printToOrder,
+							datetime=datetime,
+							printInfo = printInfo,
+							firstName=firstName,
+							lastName=lastName,
+							address1=address1,
+							address2=address2,
+							city=city,
+							state=state,
+							zip=zip,
+							payment=payment)
 	
 	except ValueError as e:
-		printInfo = graph.getPrintInfo(printToOrder)
 		return bottle.template('orderForm', 
 							error=e,
 							username = username,
