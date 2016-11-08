@@ -80,6 +80,61 @@ def getPrint(printName):
 							title='Oops!',
 							message='We can\'t find that print. Sorry!')	
 
+# Lets the user order/buy a print
+@bottle.get('/orderPrint/<printName>')
+def getOrderForm(printName):
+	
+	username = request.get_cookie("account", secret=constants.COOKIE_KEY)
+	if username is None or len(username) <= 0:
+		return bottle.template('authenticateBeforeOrder', printToOrder = printName)
+	
+	try:
+		printInfo = graph.getPrintInfo(printName)    
+	except ValueError as e:
+		return bottle.template('simpleMessage',
+							username = username,
+							title='Oops!',
+							message='An error occurred. Please try to order a print again.')
+	
+	return bottle.template('orderForm', printInfo = printInfo, username = username)
+		
+# Place the order
+@bottle.post('/orderPrint')
+def placeOrder():
+	username = request.get_cookie("account", secret=constants.COOKIE_KEY)
+	printToOrder = request.forms.get("print")
+	firstName = request.forms.get("firstName")
+	lastName = request.forms.get("lastName")
+	address1 = request.forms.get("address1")
+	address2 = request.forms.get("address2")
+	city = request.forms.get("city")
+	state = request.forms.get("state")
+	zip = request.forms.get("zip")
+	payment = request.forms.get("payment")
+	
+	try:	
+		graph.buyPrint(username, printToOrder, str(time.strftime("%Y-%m-%d %H:%M:%S")), firstName, lastName, address1, address2, city, state, zip, payment)
+		#TODO: display order details
+		return bottle.template('simpleMessage',
+							username = username,
+							title='Success!',
+							message='Your order has been placed!')
+	
+	except ValueError as e:
+		printInfo = graph.getPrintInfo(printToOrder)
+		return bottle.template('orderForm', 
+							error=e,
+							username = username,
+							printInfo = printInfo,
+							firstName=firstName,
+							lastName=lastName,
+							address1=address1,
+							address2=address2,
+							city=city,
+							state=state,
+							zip=zip,
+							payment=payment)
+		
 # Displays the registration page
 @bottle.get("/register")
 def getRegistration():

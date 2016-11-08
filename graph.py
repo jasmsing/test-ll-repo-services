@@ -17,8 +17,8 @@ def post (url, data, headers):
     
 def get (url, headers):
     response = requests.get(url, headers=headers)
-    if (response.status_code == 401):
-        print 'Expired token. Requesting a new token...'
+    if (response.status_code == 401) or (response.status_code == 403):
+        print 'Requesting a new token...'
         getToken()
         response = requests.get(url, headers=headers)
     return response
@@ -76,19 +76,19 @@ def insertSampleData():
     createPrint('Kenya', 'Jason and Lauren went on safari in Kenya after Lauren spent 4 weeks working in Nairobi as part of the IBM Corporate Service Corps.',
                 120.00, 'kenya.jpg')
     
-    buyPrint('jason', 'Alaska', "2016-10-15 13:13:17", '123 Sweet Lane', 'Apt #5', 'Valentine', 'NE', 69201, 'Paypass' )
-    buyPrint('jason', 'Las Vegas', "2016-02-03 16:05:02", '123 Sweet Lane', 'Apt #5', 'Valentine', 'NE', 69201, 'Paypass' )
-    buyPrint('jason', 'Australia', "2016-06-09 06:45:42", '529 Green St', '', 'Omaha', 'NE', 68104, 'Credit card' )
-    buyPrint('joy', 'Alaska', "2015-12-24 04:34:52", '423 Purple St', '', 'Honolulu', 'HI', 96818, 'Credit card' )
-    buyPrint('joy', 'Antarctica', "2015-12-29 16:25:02", '423 Purple St', '', 'Honolulu', 'HI', 96818, 'Credit card' )
-    buyPrint('joy', 'Las Vegas', "2016-04-22 14:48:30", '423 Purple St', '', 'Honolulu', 'HI', 96818, 'Credit card' )
-    buyPrint('joy', 'Japan', "2016-04-06 09:55:48", '423 Purple St', '', 'Honolulu', 'HI', 96818, 'Credit card' )
-    buyPrint('deanna', 'Alaska', "2016-01-17 08:46:20", '2 Flamingo Lane', '', 'Chicago', 'IL', 60629, 'Credit card' )
-    buyPrint('deanna', 'Antarctica', "2016-06-09 12:05:30", '529 Green St', '', 'Omaha', 'NE', 68104, 'Credit card' )
-    buyPrint('deanna', 'Las Vegas', "2016-10-20 13:50:00", '2 Flamingo Lane', '', 'Chicago', 'IL', 60629, 'Paypass' )
-    buyPrint('dale', 'Las Vegas', "2016-05-05 22:15:45", '25 Takeflight Ave', '', 'Houston', 'TX', 77036, 'Paypass' )
-    buyPrint('dale', 'Australia', "2016-05-06 10:15:25", '25 Takeflight Ave', '', 'Houston', 'TX', 77036, 'Paypass' )
-    buyPrint('dale', 'Las Vegas', "2016-05-06 10:18:30", '25 Takeflight Ave', '', 'Houston', 'TX', 77036, 'Paypass' )
+    buyPrint('jason', 'Alaska', "2016-10-15 13:13:17", 'Jason', 'Schaefer', '123 Sweet Lane', 'Apt #5', 'Valentine', 'NE', 69201, 'Paypass' )
+    buyPrint('jason', 'Las Vegas', "2016-02-03 16:05:02", 'Jason', 'Schaefer', '123 Sweet Lane', 'Apt #5', 'Valentine', 'NE', 69201, 'Paypass' )
+    buyPrint('jason', 'Australia', "2016-06-09 06:45:42", 'Chuck', 'Howling', '529 Green St', '', 'Omaha', 'NE', 68104, 'Credit card' )
+    buyPrint('joy', 'Alaska', "2015-12-24 04:34:52", 'Joy', 'Haywood', '423 Purple St', '', 'Honolulu', 'HI', 96818, 'Credit card' )
+    buyPrint('joy', 'Antarctica', "2015-12-29 16:25:02", 'Joy', 'Haywood', '423 Purple St', '', 'Honolulu', 'HI', 96818, 'Credit card' )
+    buyPrint('joy', 'Las Vegas', "2016-04-22 14:48:30", 'Joy', 'Haywood', '423 Purple St', '', 'Honolulu', 'HI', 96818, 'Credit card' )
+    buyPrint('joy', 'Japan', "2016-04-06 09:55:48", 'Joy', 'Haywood', '423 Purple St', '', 'Honolulu', 'HI', 96818, 'Credit card' )
+    buyPrint('deanna', 'Alaska', "2016-01-17 08:46:20", 'Deanna', 'Howling', '2 Flamingo Lane', '', 'Chicago', 'IL', 60629, 'Credit card' )
+    buyPrint('deanna', 'Antarctica', "2016-06-09 12:05:30", 'Chuck', 'Howling', '529 Green St', '', 'Omaha', 'NE', 68104, 'Credit card' )
+    buyPrint('deanna', 'Las Vegas', "2016-10-20 13:50:00", 'Deanna', 'Howling', '2 Flamingo Lane', '', 'Chicago', 'IL', 60629, 'Paypass' )
+    buyPrint('dale', 'Las Vegas', "2016-05-05 22:15:45", 'Dale', 'Haywood', '25 Takeflight Ave', '', 'Houston', 'TX', 77036, 'Paypass' )
+    buyPrint('dale', 'Australia', "2016-05-06 10:15:25", 'Dale', 'Haywood', '25 Takeflight Ave', '', 'Houston', 'TX', 77036, 'Paypass' )
+    buyPrint('dale', 'Las Vegas', "2016-05-06 10:18:30", 'Dale', 'Haywood', '25 Takeflight Ave', '', 'Houston', 'TX', 77036, 'Paypass' )
     print 'Sample data successfully inserted'
 
 def getUser(username):    
@@ -167,7 +167,7 @@ def createPrint(name, description, price, imgPath):
         raise ValueError('Print not created successfully: %s. %s. %s' %
                          (json.dumps(printJson), response.status_code, response.content))
         
-def buyPrint(username, printName, date, address1, address2, city, state, zip, paymentMethod):
+def buyPrint(username, printName, date, firstName, lastName, address1, address2, city, state, zip, paymentMethod):
 
     # get the user vertex id
     response = get(constants.API_URL + '/' + constants.GRAPH_ID + '/vertices?label=user&username=' + username, 
@@ -196,6 +196,8 @@ def buyPrint(username, printName, date, address1, address2, city, state, zip, pa
     buysJson['inV'] = printVertexId
     buysJson['properties'] = {}
     buysJson['properties']['date'] = date
+    buysJson['properties']['firstName'] = firstName
+    buysJson['properties']['lastName'] = lastName
     buysJson['properties']['address1'] = address1
     buysJson['properties']['address2'] = address2
     buysJson['properties']['city'] = city

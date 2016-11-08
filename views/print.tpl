@@ -18,7 +18,12 @@
 		
 		<div id="price">${{printInfo['properties']['price'][0]['value']}}</div>
 
-  
+		<p></p>
+  		<form class="form-horizontal" action="/orderPrint/{{printInfo['properties']['name'][0]['value']}}" method="GET">
+			
+			<button value="Buy" type="submit" class="btn btn-default">Order Print</button>
+		
+		</form>
 
  
 % include footer
