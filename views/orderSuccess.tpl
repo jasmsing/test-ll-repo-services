@@ -1,5 +1,5 @@
 % include header username = username, redirectUrl = 'home', currentUrl='orderSuccess'
-  <div><h2><em>Thanks for your order, {{username}}!</em><h2> </div>
+  <div><h2><em>Thanks for your order!</em><h2> </div>
   <br/>
 
 <p>

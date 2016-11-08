@@ -230,6 +230,11 @@ def insertSampleData():
 							title='Oops!  Something went wrong!', 
 							message=e)
 
+@bottle.get("/dev")
+def getPageForDevelopers():
+	return bottle.template('dev', 
+						username = request.get_cookie("account", secret=constants.COOKIE_KEY))
+	
 # Error Methods
 @bottle.error(404)
 def error404(error):

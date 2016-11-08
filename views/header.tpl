@@ -83,6 +83,10 @@
            		%    print 'Warning: username is not defined on this page and the navbar may not act as expected'
            		%    username = None
            		% end
+           		
+           		<li>
+           			<a href="dev">&#60;for developers&#62;</a>
+           		</li>
            		% if username is None:      		
 	           		% if 'signin' in currentUrl: 
 	           			<li class="active">
