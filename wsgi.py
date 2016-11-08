@@ -249,7 +249,8 @@ def deleteData():
 @bottle.get("/dev")
 def getPageForDevelopers():
 	return bottle.template('dev', 
-						username = request.get_cookie("account", secret=constants.COOKIE_KEY))
+						username = request.get_cookie("account", secret=constants.COOKIE_KEY),
+						users = graph.getAllUsers())
 	
 # Error Methods
 @bottle.error(404)

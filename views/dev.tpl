@@ -42,5 +42,43 @@
   
   <h3>Delete the data</h3>
   To start over with a fresh graph, click <a href="deleteData">here</a> to delete the data.
+  
+  <h3>Users</h3>
+  <table class="table">
+  	<thead>
+  		<tr>
+	  		<th>
+	  			Username
+	  		</th>
+	  		<th>
+	  			First Name
+	  		</th>
+	  		<th>
+	  			Last Name
+	  		</th>
+	  		<th>
+	  			Email
+	  		</th>
+  		</tr>
+  	</thead>
+  	<tbody>
+  	% for user in users:
+  		<tr>
+  			<td>
+  				{{user['properties']['username'][0]['value']}}
+  			</td>
+  			<td>
+  				{{user['properties']['firstName'][0]['value']}}
+  			</td>
+  			<td>
+  				{{user['properties']['lastName'][0]['value']}}
+  			</td>
+  			<td>
+  				{{user['properties']['email'][0]['value']}}
+  			</td>
+  		</tr>
+  	% end
+  	</tbody>
+  </table>
 
 % include footer

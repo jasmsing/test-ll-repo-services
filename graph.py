@@ -98,6 +98,13 @@ def getUser(username):
     if len(json.loads(response.content)['result']['data']) > 0 :
         return username
     return None
+
+def getAllUsers():
+    response = get(constants.API_URL + '/' + constants.GRAPH_ID + '/vertices?type=user', 
+                             headers)
+    if len(json.loads(response.content)['result']['data']) > 0 :
+        return json.loads(response.content)['result']['data']
+    return {}
     
 def createUser(firstName, lastName, username, email):
     
