@@ -174,6 +174,13 @@ def createPrint(name, description, price, imgPath):
     else:
         raise ValueError('Print not created successfully: %s. %s. %s' %
                          (json.dumps(printJson), response.status_code, response.content))
+
+def getAllOrders():
+    response = get(constants.API_URL + '/' + constants.GRAPH_ID + '/edges?type=buys', 
+                             headers)
+    if len(json.loads(response.content)['result']['data']) > 0 :
+        return json.loads(response.content)['result']['data']
+    return {}
         
 def buyPrint(username, printName, date, firstName, lastName, address1, address2, city, state, zip, paymentMethod):
 

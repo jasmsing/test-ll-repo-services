@@ -85,7 +85,7 @@
            		% end
            		
            		<li>
-           			<a href="dev">&#60;for developers&#62;</a>
+           			<a href="/dev">&#60;for developers&#62;</a>
            		</li>
            		% if username is None:      		
 	           		% if 'signin' in currentUrl: 

@@ -80,5 +80,111 @@
   	% end
   	</tbody>
   </table>
+  
+  <h3>Prints</h3>
+  <table class="table">
+  	<thead>
+  		<tr>
+	  		<th>
+	  			Name
+	  		</th>
+	  		<th>
+	  			Description
+	  		</th>
+	  		<th>
+	  			Price
+	  		</th>
+	  		<th>
+	  			Image Path
+	  		</th>
+  		</tr>
+  	</thead>
+  	<tbody>
+  	% for p in prints:
+  		<tr>
+  			<td>
+  				{{p['properties']['name'][0]['value']}}
+  			</td>
+  			<td>
+  				{{p['properties']['description'][0]['value']}}
+  			</td>
+  			<td>
+  				{{p['properties']['price'][0]['value']}}
+  			</td>
+  			<td>
+  				{{p['properties']['imgPath'][0]['value']}}
+  			</td>
+  		</tr>
+  	% end
+  	</tbody>
+  </table>
+  
+  <h3>Orders</h3>
+  <table class="table">
+  	<thead>
+  		<tr>
+	  		<th>
+	  			Date & Time
+	  		</th>
+	  		<th>
+	  			First Name
+	  		</th>
+	  		<th>
+	  			Last Name
+	  		</th>
+	  		<th>
+	  			Address 1
+	  		</th>
+	  		<th>
+	  			Address 2
+	  		</th>
+	  		<th>
+	  			City
+	  		</th>
+	  		<th>
+	  			State
+	  		</th>
+	  		<th>
+	  			Zip
+	  		</th>
+	  		<th>
+	  			Payment Method
+	  		</th>
+  		</tr>
+  	</thead>
+  	<tbody>
+  	% for order in orders:
+  		<tr>
+  			<td>
+  				{{order['properties']['date']}}
+  			</td>
+  			<td>
+  				{{order['properties']['firstName']}}
+  			</td>
+  			<td>
+  				{{order['properties']['lastName']}}
+  			</td>
+  			<td>
+  				{{order['properties']['address1']}}
+  			</td>
+  			<td>
+  				{{order['properties']['address2']}}
+  			</td>
+  			<td>
+  				{{order['properties']['city']}}
+  			</td>
+  			<td>
+  				{{order['properties']['state']}}
+  			</td>
+  			<td>
+  				{{order['properties']['zip']}}
+  			</td>
+  			<td>
+  				{{order['properties']['paymentMethod']}}
+  			</td>
+  		</tr>
+  	% end
+  	</tbody>
+  </table>
 
 % include footer

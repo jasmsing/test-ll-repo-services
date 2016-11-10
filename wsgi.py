@@ -250,7 +250,9 @@ def deleteData():
 def getPageForDevelopers():
 	return bottle.template('dev', 
 						username = request.get_cookie("account", secret=constants.COOKIE_KEY),
-						users = graph.getAllUsers())
+						users = graph.getAllUsers(),
+						prints = graph.getAllPrints(),
+						orders = graph.getAllOrders())
 	
 # Error Methods
 @bottle.error(404)
