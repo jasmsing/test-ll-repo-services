@@ -20,6 +20,7 @@ def get (url, headers):
     if (response.status_code == 401) or (response.status_code == 403):
         print 'Expired token. Requesting a new token...'
         getToken()
+        print 'Rerunning the request with headers: %s' % headers
         response = requests.get(url, headers=headers)
     return response
 
@@ -231,6 +232,7 @@ def getToken():
     # set the headers for all of our requests to use the token
     global headers
     headers={'Authorization': token, 'Accept': 'application/json', 'Content-Type' : 'application/json'}
+    print 'Updated headers: %s' % headers
 
 def initializeGraph():
     getToken()
