@@ -186,5 +186,9 @@
   	% end
   	</tbody>
   </table>
+  
+  <h3>Graph of Orders</h3>
+  <img src="/images/graphViz.png" alt="Graph visualization of orders">
+  
 
 % include footer

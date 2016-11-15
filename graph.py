@@ -92,7 +92,7 @@ def insertSampleData():
     buyPrint('deanna', 'Las Vegas', "2016-10-20 13:50:00", 'Deanna', 'Howling', '2 Flamingo Lane', '', 'Chicago', 'IL', 60629, 'Paypass' )
     buyPrint('dale', 'Las Vegas', "2016-05-05 22:15:45", 'Dale', 'Haywood', '25 Takeflight Ave', '', 'Houston', 'TX', 77036, 'Paypass' )
     buyPrint('dale', 'Australia', "2016-05-06 10:15:25", 'Dale', 'Haywood', '25 Takeflight Ave', '', 'Houston', 'TX', 77036, 'Paypass' )
-    buyPrint('dale', 'Las Vegas', "2016-05-06 10:18:30", 'Dale', 'Haywood', '25 Takeflight Ave', '', 'Houston', 'TX', 77036, 'Paypass' )
+    buyPrint('dale', 'Japan', "2016-05-06 10:18:30", 'Dale', 'Haywood', '25 Takeflight Ave', '', 'Houston', 'TX', 77036, 'Paypass' )
     print 'Sample data successfully inserted'
 
 def getUser(username):    

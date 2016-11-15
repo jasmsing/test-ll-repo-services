@@ -47,6 +47,7 @@ import bottle
 from bottle import *
 import os,sys,logging, traceback, json, string, urllib, urllib2
 import graph
+import graphViz
 import constants
 import urlparse
 
@@ -253,6 +254,11 @@ def getPageForDevelopers():
 						users = graph.getAllUsers(),
 						prints = graph.getAllPrints(),
 						orders = graph.getAllOrders())
+   
+@route('/images/graphViz.png')
+def createGraphViz():
+	graphViz.createGraphViz()
+	return static_file('graphViz.png', root='./', mimetype='image/png')
 	
 # Error Methods
 @bottle.error(404)
