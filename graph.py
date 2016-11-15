@@ -22,6 +22,9 @@ def get (url, headers):
         getToken()
         print 'Rerunning the request with headers: %s' % headers
         response = requests.get(url, headers=headers)
+        print 'The response is %s %s' % (response, response.content)
+        return response
+    print 'About to return the following response: %s %s' % (response, response.content)
     return response
 
 def getAllPrints():
