@@ -187,8 +187,24 @@
   	</tbody>
   </table>
   
-  <h3>Graph of Orders</h3>
-  <img src="/images/graphViz.png" alt="Graph visualization of orders">
+  <h3>Visualizing the Orders</h3>
+  <p>
+  	If you would like to visualize the orders in a graph, you can do so by 
+  	deploying the app (instructions coming soon) and then doing the following:
+  	<ol>
+  		<li> Log into <a href="http://bluemix.net" target="_blank">Bluemix</a> </li>
+  		<li> In the Services section of the Dashboard, click on your app's Graph instance </li>
+  		<li> Click <b>Open</b> </li>
+  		<li> Input a Gremlin query like the following and execute it: 
+  			<code>
+  				def gt = graph.traversal();gt.V().has("type", "user").outE("buys").inV().has("type","print").path();
+  			</code>
+  		</li>
+  	</ol>
+  </p>
   
+  <p>
+  	Video coming soon.
+  </p>
 
 % include footer
