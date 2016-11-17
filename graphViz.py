@@ -3,7 +3,7 @@ import networkx as nx
 import graph
 
 def createGraphViz():
-    G = nx.Graph()
+    G = nx.MultiGraph()
     
     users = graph.getAllUsers()
     prints = graph.getAllPrints()
@@ -13,7 +13,7 @@ def createGraphViz():
     for p in prints:
         G.add_node(p['id'] , label=p['properties']['name'][0]['value'], type='print')
     for order in orders:
-        G.add_edge(order['outV'], order['inV'])
+        G.add_edge(order['outV'], order['inV'], key=order['properties']['date'], label=order['properties']['date'])
 
     pos = nx.spring_layout(G)
 
@@ -28,6 +28,18 @@ def createGraphViz():
     nx.draw(G, pos, node_color=node_color, node_size=4000, alpha=0.5)
     node_labels = nx.get_node_attributes(G, 'label')
     nx.draw_networkx_labels(G, pos, labels = node_labels)
+    edge_labels = nx.get_edge_attributes(G, 'label')
+    print 'labels'
+    print edge_labels
+    print 'edges'
+    for edge in G.edges(data=True):
+        print edge
+    print len(edge_labels)
+    print len(G.edges())
+    nx.draw_networkx_edge_labels(G, pos, alpha = 0.5, font_size=6)
+
+
+    
     plt.axis('off')
     plt.savefig('graphViz.png')
     plt.clf()
