@@ -181,6 +181,42 @@ def registerUser():
 							lastName=lastName,
 							email=email,
 							redirectUrl=redirectUrl)
+		
+# Displays the registration page
+@bottle.get("/profile")
+def getProfile():
+	username = request.get_cookie("account", secret=constants.COOKIE_KEY)
+	if username is None or len(username) <= 0:
+		return bottle.template('simpleMessage',
+							username = username,
+ 							title='Oops!',
+ 							message='You need to sign in before you can edit your profile.')
+	return bottle.template('profile', username = username, userInfo = graph.getUser(username))
+
+@bottle.post('/profile')
+def updateProfile():
+	userNodeId = request.forms.get("userNodeId")
+	firstName = request.forms.get("firstName")
+	lastName = request.forms.get("lastName")
+	email = request.forms.get("email")
+	username = request.get_cookie("account", secret=constants.COOKIE_KEY)
+	
+	try:
+		# update the user in the graph
+		graph.updateUser(userNodeId, firstName, lastName, email)
+ 		
+		return bottle.template('simpleMessage',
+							username = username,
+							title='Success!',
+							message='You\'ve successfully updated your profile!')
+	except ValueError as e:
+		return bottle.template('profile', 
+							error=e,
+							firstName=firstName,
+							lastName=lastName,
+							email=email,
+							userNodeId=userNodeId,
+							username=username)
 
 # Displays the Sign In page
 @bottle.get("/signin")
@@ -197,8 +233,7 @@ def signIn():
 	username = request.forms.get("username")
 	# for simplicity, not dealing with passwords
 	# if the username exists in the graph, we will authenticate the user
-	username = graph.getUser(username)
-	if username is not None:
+	if graph.doesUserExist(username):
 		print 'Authenticating user %s' % username
 		response.set_cookie("account", username, secret=constants.COOKIE_KEY)
 		redirect(request.forms.get("redirectUrl"))
@@ -206,7 +241,7 @@ def signIn():
 		print 'Unable to authenticate user %s' % username
 		return bottle.template('signin', 
 							error='Unable to find an account with the given username. Please try again.',
-							currentUrl = request.forms.get("redirectUrl"))
+							redirectUrl = request.forms.get("redirectUrl"))
 
 @bottle.get('/signout')
 def signOut():

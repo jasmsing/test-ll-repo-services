@@ -95,13 +95,44 @@ def insertSampleData():
     buyPrint('dale', 'Japan', "2016-05-06 10:18:30", 'Dale', 'Haywood', '25 Takeflight Ave', '', 'Houston', 'TX', 77036, 'Paypass' )
     print 'Sample data successfully inserted'
 
-def getUser(username):    
+def getUser(username):
+    gremlin = {
+        "gremlin": "def gt = graph.traversal();gt.V().hasLabel(\"user\").has(\"username\", \"" + username + "\");"
+        }
+    response = post(constants.API_URL + '/' + constants.GRAPH_ID + '/gremlin', json.dumps(gremlin), headers)
+    if (response.status_code == 200):  
+        results = json.loads(response.content)['result']['data'] 
+        if len(results) > 0:
+            user = results[0]
+            print 'Found user with username %s.' % username
+            return user
+
+    raise ValueError('Unable to find user with username %s' % username)
+
+# not currently letting usernames be updated
+def updateUser(userNodeId, firstName, lastName, email):
+    gremlin = {
+        "gremlin": "def gt = graph.traversal();gt.V(" + userNodeId + ")" +
+            ".property('firstName', '" + firstName + "')" + 
+            ".property('lastName', '" + lastName + "')" +
+            ".property('email', '" + email + "');" 
+        }
+    response = post(constants.API_URL + '/' + constants.GRAPH_ID + '/gremlin', json.dumps(gremlin), headers)
+    if (response.status_code == 200): 
+        print 'Successfully updated user with id %s with the following values: %s %s %s' % (userNodeId, firstName, lastName, email)
+        return True
+    else:
+        raise ValueError('An error occurred while trying to update user %s: %s %s.' % (userNodeId, response.status_code, response.content))
+        return False
+        
+    
+def doesUserExist(username):    
     print 'Getting user with username %s from the graph' % username
     response = get(constants.API_URL + '/' + constants.GRAPH_ID + '/vertices?label=user&username=' + username, 
                              headers)
     if len(json.loads(response.content)['result']['data']) > 0 :
-        return username
-    return None
+        return True
+    return False
 
 def getAllUsers():
     response = get(constants.API_URL + '/' + constants.GRAPH_ID + '/vertices?type=user', 
@@ -112,13 +143,9 @@ def getAllUsers():
     
 def createUser(firstName, lastName, username, email):
     
-    # check if a user with the given username already exists
-    response = get(constants.API_URL + '/' + constants.GRAPH_ID + '/vertices?label=user&username=' + username, 
-                             headers)
-    if ((response.status_code == 200) and 
-        ( len(json.loads(response.content)['result']['data']) > 0)):
-            raise ValueError('The username \'%s\' is already taken. Get creative and try again.' % username)
-            return
+    if doesUserExist(username):
+        raise ValueError('The username \'%s\' is already taken. Get creative and try again.' % username)
+        return
     
     # if the user does not already exist, create the user
     print 'Creating new user'

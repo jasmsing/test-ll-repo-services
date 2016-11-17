@@ -18,6 +18,7 @@
   	float: left;
 	margin-right: 20px;
 	margin-bottom: 30px;
+	min-height: 160px
   }    
   .preview .thumb {
     border: 0 none;
@@ -103,6 +104,13 @@
 	           		<a href="/register">Register</a></li>	           	   	
 	           	
 	           	% else:
+	           		% if 'profile' in currentUrl: 
+	           			<li class="active">
+	           		% else:
+	           			<li>
+	           		% end
+	           		<a href="/profile">Edit Profile</a></li>
+	           		
 	           		<li><a href="/signout?redirectUrl={{redirectUrl}}">Sign Out</a></li>
 	            
 	            % end
