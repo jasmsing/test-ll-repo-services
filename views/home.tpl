@@ -11,7 +11,7 @@
 		
 		<p>
 			
-			Please check back often to see if we have sales!!!
+			Please check back often to see if we have sales!!!!
 			
 		</p>
 		
