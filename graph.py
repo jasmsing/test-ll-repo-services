@@ -7,15 +7,15 @@ import constants
 schemaFileLocation='schema.json'
 headers=''
 
-def post (url, data, headers):
+def post (url, data):
     response = requests.post(url, data=data, headers=headers)
-    if (response.status_code == 401):
+    if (response.status_code == 401) or (response.status_code == 403):
         print 'Expired token. Requesting a new token...'
         getToken()
         response = requests.post(url, data=data, headers=headers)
     return response
     
-def get (url, headers):
+def get (url):
     response = requests.get(url, headers=headers)
     if (response.status_code == 401) or (response.status_code == 403):
         print 'Expired token. Requesting a new token...'
@@ -29,8 +29,7 @@ def get (url, headers):
 
 def getAllPrints():
     print 'Getting the prints...'
-    response = get(constants.API_URL + '/' + constants.GRAPH_ID + '/vertices?label=print&type=print', 
-                             headers)
+    response = get(constants.API_URL + '/' + constants.GRAPH_ID + '/vertices?label=print&type=print')
     prints = {}
     if (response.status_code == 200):
         prints = json.loads(response.content)['result']['data']
@@ -99,7 +98,7 @@ def getUser(username):
     gremlin = {
         "gremlin": "def gt = graph.traversal();gt.V().hasLabel(\"user\").has(\"username\", \"" + username + "\");"
         }
-    response = post(constants.API_URL + '/' + constants.GRAPH_ID + '/gremlin', json.dumps(gremlin), headers)
+    response = post(constants.API_URL + '/' + constants.GRAPH_ID + '/gremlin', json.dumps(gremlin))
     if (response.status_code == 200):  
         results = json.loads(response.content)['result']['data'] 
         if len(results) > 0:
@@ -111,13 +110,14 @@ def getUser(username):
 
 # not currently letting usernames be updated
 def updateUser(userNodeId, firstName, lastName, email):
+    print 'update user: %s' % firstName
     gremlin = {
         "gremlin": "def gt = graph.traversal();gt.V(" + userNodeId + ")" +
             ".property('firstName', '" + firstName + "')" + 
             ".property('lastName', '" + lastName + "')" +
             ".property('email', '" + email + "');" 
         }
-    response = post(constants.API_URL + '/' + constants.GRAPH_ID + '/gremlin', json.dumps(gremlin), headers)
+    response = post(constants.API_URL + '/' + constants.GRAPH_ID + '/gremlin', json.dumps(gremlin))
     if (response.status_code == 200): 
         print 'Successfully updated user with id %s with the following values: %s %s %s' % (userNodeId, firstName, lastName, email)
         return True
@@ -128,15 +128,13 @@ def updateUser(userNodeId, firstName, lastName, email):
     
 def doesUserExist(username):    
     print 'Getting user with username %s from the graph' % username
-    response = get(constants.API_URL + '/' + constants.GRAPH_ID + '/vertices?label=user&username=' + username, 
-                             headers)
+    response = get(constants.API_URL + '/' + constants.GRAPH_ID + '/vertices?label=user&username=' + username)
     if len(json.loads(response.content)['result']['data']) > 0 :
         return True
     return False
 
 def getAllUsers():
-    response = get(constants.API_URL + '/' + constants.GRAPH_ID + '/vertices?type=user', 
-                             headers)
+    response = get(constants.API_URL + '/' + constants.GRAPH_ID + '/vertices?type=user')
     if len(json.loads(response.content)['result']['data']) > 0 :
         return json.loads(response.content)['result']['data']
     return {}
@@ -158,7 +156,7 @@ def createUser(firstName, lastName, username, email):
     userJson['type'] = 'user'
 
     response = post(constants.API_URL + '/' + constants.GRAPH_ID + '/vertices', 
-                             json.dumps(userJson), headers)
+                             json.dumps(userJson))
     if (response.status_code == 200):
         print 'User successfully created: %s' % (json.dumps(userJson))
     else:
@@ -166,8 +164,7 @@ def createUser(firstName, lastName, username, email):
                          (json.dumps(userJson), response.status_code, response.content))
         
 def getPrintInfo(name):
-    response = get(constants.API_URL + '/' + constants.GRAPH_ID + '/vertices?label=print&name=' + name, 
-                             headers)
+    response = get(constants.API_URL + '/' + constants.GRAPH_ID + '/vertices?label=print&name=' + name)
     
     if (response.status_code == 200):  
         results = json.loads(response.content)['result']['data'] 
@@ -181,8 +178,7 @@ def getPrintInfo(name):
 def createPrint(name, description, price, imgPath):
     
     # check if a print with the given name already exists
-    response = get(constants.API_URL + '/' + constants.GRAPH_ID + '/vertices?label=print&name=' + name, 
-                             headers)
+    response = get(constants.API_URL + '/' + constants.GRAPH_ID + '/vertices?label=print&name=' + name)
     if ((response.status_code == 200) and 
         ( len(json.loads(response.content)['result']['data']) > 0)):
             print 'Print with name %s already exists. Print will not be created.' % name
@@ -198,7 +194,7 @@ def createPrint(name, description, price, imgPath):
     printJson['type'] = 'print'
 
     response = post(constants.API_URL + '/' + constants.GRAPH_ID + '/vertices', 
-                             json.dumps(printJson), headers)
+                             json.dumps(printJson))
     if (response.status_code == 200):
         print 'Print successfully created: %s' % (json.dumps(printJson))
     else:
@@ -206,8 +202,7 @@ def createPrint(name, description, price, imgPath):
                          (json.dumps(printJson), response.status_code, response.content))
 
 def getAllOrders():
-    response = get(constants.API_URL + '/' + constants.GRAPH_ID + '/edges?type=buys', 
-                             headers)
+    response = get(constants.API_URL + '/' + constants.GRAPH_ID + '/edges?type=buys')
     if len(json.loads(response.content)['result']['data']) > 0 :
         return json.loads(response.content)['result']['data']
     return {}
@@ -215,8 +210,7 @@ def getAllOrders():
 def buyPrint(username, printName, date, firstName, lastName, address1, address2, city, state, zip, paymentMethod):
 
     # get the user vertex id
-    response = get(constants.API_URL + '/' + constants.GRAPH_ID + '/vertices?label=user&username=' + username, 
-                             headers)
+    response = get(constants.API_URL + '/' + constants.GRAPH_ID + '/vertices?label=user&username=' + username)
     if ((response.status_code == 200) and 
         ( len(json.loads(response.content)['result']['data']) > 0)):
             userVertexId = json.loads(response.content)['result']['data'][0]['id']
@@ -225,8 +219,7 @@ def buyPrint(username, printName, date, firstName, lastName, address1, address2,
                          (username, response.status_code, response.content)) 
             
     # get the print vertex id
-    response = get(constants.API_URL + '/' + constants.GRAPH_ID + '/vertices?label=print&name=' + printName, 
-                             headers)
+    response = get(constants.API_URL + '/' + constants.GRAPH_ID + '/vertices?label=print&name=' + printName)
     if ((response.status_code == 200) and 
         ( len(json.loads(response.content)['result']['data']) > 0)):
             printVertexId = json.loads(response.content)['result']['data'][0]['id']
@@ -251,7 +244,7 @@ def buyPrint(username, printName, date, firstName, lastName, address1, address2,
     buysJson['properties']['paymentMethod'] = paymentMethod
     buysJson['type'] = 'buys'
 
-    response = post(constants.API_URL + '/' + constants.GRAPH_ID + '/edges', json.dumps(buysJson), headers)
+    response = post(constants.API_URL + '/' + constants.GRAPH_ID + '/edges', json.dumps(buysJson))
     print json.dumps(buysJson)
     if (response.status_code == 200):
         print 'Print successfully bought: %s' % (json.dumps(buysJson))
@@ -276,12 +269,12 @@ def initializeGraph():
 
     # if the graph is not already created, create it and create the schema and indexes
     print 'Checking to see if graph with id %s exists...' % (constants.GRAPH_ID)
-    response = get(constants.API_URL + '/' + constants.GRAPH_ID, headers)
+    response = get(constants.API_URL + '/' + constants.GRAPH_ID)
     if response.status_code == 200:
         print 'Graph with id %s already exists' % (constants.GRAPH_ID)
     else:
         print 'Creating graph with id %s' % (constants.GRAPH_ID)
-        response = post(constants.API_URL + '/_graphs/' + constants.GRAPH_ID, '', headers)
+        response = post(constants.API_URL + '/_graphs/' + constants.GRAPH_ID, '')
         if (response.status_code == 201):
             print 'Graph with id %s successfully created'  % (constants.GRAPH_ID)
         else:
@@ -291,8 +284,7 @@ def initializeGraph():
         print 'Creating the schema and indexes for graph %s based on %s. This may take a minute or two...' % (constants.GRAPH_ID, schemaFileLocation)
         schema = open(schemaFileLocation, 'rb').read()
         response = post(constants.API_URL + '/' + constants.GRAPH_ID + '/schema',
-                             schema,
-                             headers)
+                             schema)
         if (response.status_code == 200):
             print 'Schema and indexes for graph %s successfully created based on %s' % (constants.GRAPH_ID, schemaFileLocation)
         else:
@@ -307,7 +299,7 @@ def dropGraph():
                     "g.E().has('type', 'buys').drop().count();" + 
                     "g.V().has('type', within('print','user')).drop();" 
         }
-    response = post(constants.API_URL + '/' + constants.GRAPH_ID + '/gremlin' , json.dumps(data), headers)
+    response = post(constants.API_URL + '/' + constants.GRAPH_ID + '/gremlin' , json.dumps(data))
     if response.status_code == 200:
         print 'Successfully deleted Buys edges, Print vertexes, and User vertexes'
     else:
