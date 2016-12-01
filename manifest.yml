@@ -12,4 +12,4 @@ applications:
   path: .
   command: python wsgi.py
   services
-    - LaurensLovelyLandscapesSample-Graph
+  - LaurensLovelyLandscapesSample-Graph
