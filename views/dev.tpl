@@ -26,8 +26,13 @@
   <h3>Like videos?</h3>
   Me too!  Get the inside scoop on how I developed the app in my <a href="https://developer.ibm.com/clouddataservices/docs/graph/how-to/e2e-use-case/">video series</a>.
 
-  <h3>Want the code?</h3>
-  I thought you might.  Get a copy of my code <a href="https://hub.jazz.net/project/lhayward/Laurens%20Lovely%20Landscapes%20%28IBM%20Graph%29/overview">here</a>.		
+  <h3>Want your own copy of the app?</h3>
+  I thought you might.  Get a copy of my code <a href="https://hub.jazz.net/project/lhayward/Laurens%20Lovely%20Landscapes%20%28IBM%20Graph%29/overview">here</a>.
+  Or you can deploy the app to Bluemix with the simple click of a button:
+  
+  <p>
+    <a href="https://bluemix.net/deploy?repository=https://hub.jazz.net/git/lhayward/Laurens.Lovely.Landscapes.(IBM.Graph)" # [required]><img src="https://bluemix.net/deploy/button.png" alt="Deploy to Bluemix"></a>	
+  </p>  
 
   </div> <!-- end of the hero-unit-->
   </div> <!-- end of the container-->
@@ -190,11 +195,20 @@
   <h3>Visualizing the Orders</h3>
   <p>
   	If you would like to visualize the orders in a graph, you can do so by 
-  	deploying the app (instructions coming soon) and then doing the following:
+  	<a href="https://bluemix.net/deploy?repository=https://hub.jazz.net/git/lhayward/Laurens.Lovely.Landscapes.(IBM.Graph)">deploying the app</a>
+  	and then doing the following:
   	<ol>
+  	    <li> If you have not already inserted the sample data in your deployed version of the app, complete the following steps:
+  	         <ol>
+	  	         <li> Open your deployed version of the app</li>
+	  	         <li> Click <strong>&lt;for developers&gt;</strong> in the top menu</li>
+	  	         <li> Click the link to <strong>insert the sample data</strong></li>
+  	         </ol>
+  	    </li>
   		<li> Log into <a href="http://bluemix.net" target="_blank">Bluemix</a> </li>
   		<li> In the Services section of the Dashboard, click on your app's Graph instance </li>
   		<li> Click <b>Open</b> </li>
+  		<li> In the menu at the top of the page, select <strong>landscapes_graph</strong> to switch to the graph with your app's data (<strong>g</strong> is selected by default)
   		<li> Input a Gremlin query like the following and execute it: 
   			<code>
   				def gt = graph.traversal();gt.V().has("type", "user").outE("buys").inV().has("type","print").path();
