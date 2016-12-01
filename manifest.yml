@@ -1,17 +1,15 @@
 ---
 declared-services:
-  LaurensLovelyLandscapesSample-${MY-RANDOM-WORD}:
+  LaurensLovelyLandscapesSample-Graph:
     label: IBM Graph
     plan: Standard
 applications:
 - name: LaurensLovelyLandscapesSample
-  env:
-    MY-RANDOM-WORD: ${random-word}
   buildpack: python_buildpack
   memory: 256M
   instances: 1
-  host: LaurensLovelyLandscapesSample-${MY-RANDOM-WORD}
+  host: LaurensLovelyLandscapesSample-${random-word}
   path: .
   command: python wsgi.py
   services:
-  - LaurensLovelyLandscapesSample-${MY-RANDOM-WORD}
+  - LaurensLovelyLandscapesSample-Graph
