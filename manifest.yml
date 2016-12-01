@@ -11,5 +11,5 @@ applications:
   host: LaurensLovelyLandscapesSample-${random-word}
   path: .
   command: python wsgi.py
-  services
+  services:
   - LaurensLovelyLandscapesSample-Graph
