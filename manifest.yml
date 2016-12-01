@@ -1,12 +1,12 @@
 ---
 declared-services:
-  env:
-    MY-RANDOM-WORD: ${random-word}
   LaurensLovelyLandscapesSample-${MY-RANDOM-WORD}:
     label: IBM Graph
     plan: Standard
 applications:
 - name: LaurensLovelyLandscapesSample
+  env:
+    MY-RANDOM-WORD: ${random-word}
   buildpack: python_buildpack
   memory: 256M
   instances: 1
