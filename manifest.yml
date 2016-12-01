@@ -1,7 +1,7 @@
 ---
-env:
-  MY-RANDOM-WORD: ${random-word}
 declared-services:
+  env:
+    MY-RANDOM-WORD: ${random-word}
   LaurensLovelyLandscapesSample-${MY-RANDOM-WORD}:
     label: IBM Graph
     plan: Standard
