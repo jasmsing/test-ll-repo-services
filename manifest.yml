@@ -1,9 +1,15 @@
 ---
+declared-services:
+  LaurensLovelyLandscapesSample-Graph:
+    label: IBM Graph
+    plan: Standard
 applications:
-- name: LaurensLovelyLandscapes
+- name: LaurensLovelyLandscapesSample
   buildpack: python_buildpack
   memory: 256M
   instances: 1
-  host: LaurensLovelyLandscapes-${random-word}
+  host: LaurensLovelyLandscapesSample-${random-word}
   path: .
   command: python wsgi.py
+  services
+    - LaurensLovelyLandscapesSample-Graph
