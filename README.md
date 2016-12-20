@@ -5,3 +5,5 @@ This is a sample online store that sells prints.  For a running version of the a
 This is a Python app that uses the [Bottle framework](http://bottlepy.org/docs/dev/).  It leverages IBM Graph on Bluemix.
 
 For more information, see https://laurenslovelylandscapegraph.mybluemix.net/dev.
+
+Try [deploying this project my friend](https://hub.jazz.net/deploy)
